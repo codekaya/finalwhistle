@@ -1,29 +1,47 @@
 import { useEffect, useRef, useState } from 'react'
 
-/** Adds an `in` class the first time the element scrolls into view. */
-export function useReveal<T extends HTMLElement = HTMLDivElement>(options?: IntersectionObserverInit) {
+/** Adds an `in` class the first time the element scrolls into view.
+ *  Bulletproof: fires on any intersection, checks immediately on mount,
+ *  and has a safety fallback so content can never stay invisible. */
+export function useReveal<T extends HTMLElement = HTMLDivElement>() {
   const ref = useRef<T | null>(null)
   useEffect(() => {
     const node = ref.current
     if (!node) return
+
+    const reveal = () => node.classList.add('in')
+
+    // Already within (or above) the viewport on mount → reveal now.
+    const inView = () => {
+      const r = node.getBoundingClientRect()
+      const vh = window.innerHeight || document.documentElement.clientHeight
+      return r.top < vh * 0.92 && r.bottom > 0
+    }
     if (typeof IntersectionObserver === 'undefined') {
-      node.classList.add('in')
+      reveal()
       return
     }
+    if (inView()) reveal()
+
     const io = new IntersectionObserver(
       (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            e.target.classList.add('in')
-            io.unobserve(e.target)
-          }
+        if (entries.some((e) => e.isIntersecting)) {
+          reveal()
+          io.disconnect()
         }
       },
-      { threshold: 0.18, rootMargin: '0px 0px -8% 0px', ...options },
+      { threshold: 0, rootMargin: '0px 0px -8% 0px' },
     )
     io.observe(node)
-    return () => io.disconnect()
-  }, [options])
+
+    // Safety net: never let content stay hidden if the observer misfires.
+    const fallback = window.setTimeout(reveal, 2600)
+
+    return () => {
+      io.disconnect()
+      window.clearTimeout(fallback)
+    }
+  }, [])
   return ref
 }
 

@@ -15,7 +15,7 @@ export function Reveal({
   const ref = useReveal()
   return (
     // @ts-expect-error dynamic tag
-    <Tag ref={ref} className={`reveal ${className}`} style={{ animationDelay: `${delay}ms` }}>
+    <Tag ref={ref} className={`reveal ${className}`} style={{ transitionDelay: `${delay}ms` }}>
       {children}
     </Tag>
   )

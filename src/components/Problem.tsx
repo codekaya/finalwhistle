@@ -19,11 +19,11 @@ function LatencyChart() {
             </div>
             <div className="h-2.5 w-full overflow-hidden rounded-full bg-bg">
               <div
-                className={`reveal in h-full rounded-full ${toneBg(b.tone)}`}
+                className={`bar-grow h-full origin-left rounded-full ${toneBg(b.tone)}`}
                 style={{
                   width: `${Math.max(4, b.fill * 100)}%`,
                   opacity: b.tone === 'ok' ? 1 : 0.7,
-                  animation: `reveal 0.9s var(--ease-out-expo) ${150 + i * 120}ms forwards`,
+                  animationDelay: `${150 + i * 110}ms`,
                 }}
               />
             </div>
