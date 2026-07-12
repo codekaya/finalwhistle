@@ -1,13 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { type Lane } from '../data'
 import {
-  FIXTURE,
-  FULL_TIME_MINUTE,
-  LANES,
-  MATCH_EVENTS,
-  PROOF_FIELDS,
-  RACE_DURATION_MS,
-  type Lane,
-} from '../data'
+  HAS_LIVE,
+  liveFixture,
+  liveLanes,
+  liveMatchEvents,
+  liveProofFields,
+  liveRaceDurationMs,
+} from '../live'
+
+const FIXTURE = liveFixture()
+const { events: MATCH_EVENTS, fullTimeMinute: FULL_TIME_MINUTE } = liveMatchEvents()
+const LANES = liveLanes()
+const PROOF_FIELDS = liveProofFields()
+const RACE_DURATION_MS = liveRaceDurationMs()
 import { Reveal, SectionHead, toneBg, toneChip, toneText } from './ui'
 
 type Phase = 'idle' | 'match' | 'race' | 'done'
@@ -164,7 +170,11 @@ export default function Demo() {
           index="02"
           kicker="Live demo"
           title="The settlement race"
-          sub="One match, three settlement mechanisms, same starting gun. A historical replay of the 2022 World Cup Final — football's most famous rulebook edge case: the trophy went to Argentina, but the 90-minute market settles as a draw."
+          sub={
+            HAS_LIVE
+              ? `One match, three settlement mechanisms, same starting gun. Real World Cup data from TxLINE fixture ${FIXTURE.fixtureId} — fetched, proof-verified on Solana devnet, and settled in ${(LANES[0].steps[LANES[0].steps.length - 1].at / 1000).toFixed(1)}s.`
+              : "One match, three settlement mechanisms, same starting gun. Run the keeper to load live TxLINE data — until then this replays a mock World Cup final."
+          }
         />
 
         <Reveal>
@@ -248,11 +258,11 @@ export default function Demo() {
                     : 'pointer-events-none max-h-0 overflow-hidden border-transparent opacity-0'
                 }`}
               >
-                <span className="font-semibold text-ink">Why we settle what the others fight over: </span>
+                <span className="font-semibold text-ink">Verified on-chain, not asserted: </span>
                 <span className="text-muted">
-                  Argentina lifted the trophy — but this market's rulebook settles on the 90-minute result:
-                  a draw. FinalWhistle resolved that ambiguity at market <em>creation</em>, so there's
-                  nothing left to dispute. The oracle lane is still voting on exactly this question, funds locked.
+                  {FIXTURE.home} vs {FIXTURE.away} settled as {FIXTURE.home} {MATCH_EVENTS[MATCH_EVENTS.length - 1]?.score[0]}–{MATCH_EVENTS[MATCH_EVENTS.length - 1]?.score[1]} {FIXTURE.away}.
+                  TxLINE's Merkle proof was checked by the Solana program — no proposal, no challenge window, no ops desk.
+                  The oracle lane is still voting; funds still locked.
                 </span>
               </div>
             </div>

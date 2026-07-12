@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { FEED_POOL, type FeedItem } from '../data'
+import { HAS_LIVE, liveFeedSeed } from '../live'
 
 interface Row extends FeedItem {
   id: number
@@ -19,15 +20,20 @@ export default function LiveFeed() {
   const idx = useRef(0)
 
   useEffect(() => {
+    const live = liveFeedSeed()
+    const pool: FeedItem[] = live
+      ? [{ fixture: live.fixture, market: live.market, usdc: live.usdc, settleMs: live.settleMs }, ...FEED_POOL]
+      : FEED_POOL
+
     // seed a few
     const seed: Row[] = Array.from({ length: 4 }).map(() => {
-      const item = FEED_POOL[idx.current++ % FEED_POOL.length]
+      const item = pool[idx.current++ % pool.length]
       return { ...item, id: counter++, born: performance.now() }
     })
     setRows(seed)
 
     const timer = setInterval(() => {
-      const item = FEED_POOL[idx.current++ % FEED_POOL.length]
+      const item = pool[idx.current++ % pool.length]
       const row: Row = { ...item, id: counter++, born: performance.now() }
       setRows((prev) => [row, ...prev].slice(0, 6))
       setTotal((t) => t + item.usdc)
@@ -94,7 +100,9 @@ export default function LiveFeed() {
       </div>
 
       <p className="border-t border-line px-4 py-2 text-center text-[10.5px] text-faint">
-        Illustrative feed · replayed World Cup markets
+        {HAS_LIVE
+          ? `TxLINE fixture ${liveFeedSeed()?.fixtureId} · on-chain proof verified`
+          : 'Illustrative feed · run keeper for live TxLINE data'}
       </p>
     </div>
   )

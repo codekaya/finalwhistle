@@ -75,7 +75,7 @@ export default function Hero() {
         </div>
 
         {/* Right — live feed */}
-        <div className="reveal in" style={{ animationDelay: '120ms' }}>
+        <div className="reveal in" style={{ transitionDelay: '120ms' }}>
           <LiveFeed />
         </div>
       </div>
