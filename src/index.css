@@ -1,21 +1,26 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #0a0e12;
-  --color-surface: #10161c;
-  --color-surface-2: #161e26;
-  --color-line: #1f2a33;
-  --color-ink: #e8edf2;
-  --color-muted: #8a97a3;
-  --color-accent: #2bd97a;
-  --color-accent-dim: rgba(43, 217, 122, 0.12);
-  --color-danger: #e5484d;
-  --color-warn: #f5a623;
+  /* Tier 1 — brand seeds */
+  --color-bg: #07090b;
+  --color-bg-2: #0b0e12;
+  --color-surface: #0f1318;
+  --color-surface-2: #141a21;
+  --color-line: #1c242c;
+  --color-line-2: #29343d;
+  --color-ink: #eef2f5;
+  --color-muted: #93a1ad;
+  --color-faint: #5c6873;
+  --color-accent: #2bff88;
+  --color-accent-2: #14c46a;
+  --color-danger: #ff5a5f;
+  --color-warn: #ffb020;
 
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
   --ease-out-quart: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 html {
@@ -27,48 +32,120 @@ body {
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: #04120a;
 }
 
 .tnum {
   font-variant-numeric: tabular-nums;
 }
 
-/* Subtle pitch-line texture behind the hero */
-.hero-grid {
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* Kicker / eyebrow label */
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+/* Backdrops & textures ------------------------------------------------ */
+
+.grid-lines {
   background-image:
-    linear-gradient(to right, rgba(43, 217, 122, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(43, 217, 122, 0.04) 1px, transparent 1px);
-  background-size: 56px 56px;
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
+    linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+.hero-glow {
+  background:
+    radial-gradient(60% 55% at 78% 12%, rgba(43, 255, 136, 0.1), transparent 70%),
+    radial-gradient(50% 40% at 8% 0%, rgba(43, 255, 136, 0.05), transparent 70%);
+}
+
+.scanline {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(43, 255, 136, 0.5),
+    transparent
+  );
+}
+
+/* Fade mask for scrolling feeds */
+.mask-y {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 12%, black 88%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, black 12%, black 88%, transparent);
+}
+
+/* Reveal on scroll ---------------------------------------------------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .rise {
-    animation: rise 0.5s var(--ease-out-quart) both;
+  .reveal.in {
+    animation: reveal 0.7s var(--ease-out-expo) forwards;
   }
-  @keyframes rise {
+  @keyframes reveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .marquee-track {
+    animation: marquee 40s linear infinite;
+  }
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .feed-row-enter {
+    animation: feedIn 0.5s var(--ease-out-quart);
+  }
+  @keyframes feedIn {
     from {
       opacity: 0;
-      transform: translateY(12px);
+      transform: translateY(-8px);
     }
     to {
       opacity: 1;
       transform: translateY(0);
     }
   }
-  .flash-settle {
-    animation: flash 0.6s var(--ease-out-quart);
+
+  .flash {
+    animation: flash 0.7s var(--ease-out-quart);
   }
   @keyframes flash {
     0% {
-      background-color: rgba(43, 217, 122, 0.25);
+      background-color: rgba(43, 255, 136, 0.22);
+      box-shadow: 0 0 0 1px rgba(43, 255, 136, 0.5) inset;
     }
     100% {
-      background-color: rgba(43, 217, 122, 0.06);
+      background-color: transparent;
+      box-shadow: 0 0 0 1px transparent inset;
     }
   }
-  .pulse-dot {
-    animation: pulse 1.6s ease-in-out infinite;
+
+  .pulse {
+    animation: pulse 1.8s ease-in-out infinite;
   }
   @keyframes pulse {
     0%,
@@ -76,7 +153,37 @@ body {
       opacity: 1;
     }
     50% {
-      opacity: 0.35;
+      opacity: 0.3;
     }
   }
+
+  .scan {
+    animation: scan 2.4s var(--ease-out-quart) infinite;
+  }
+  @keyframes scan {
+    0% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    30% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(1600%);
+      opacity: 0;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Focus ring */
+.ring-focus:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-accent);
 }
