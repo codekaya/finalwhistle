@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "keeper:balance": "npm run balance --prefix keeper",
+    "keeper:activate": "npm run activate --prefix keeper",
+    "keeper:run": "npm run run --prefix keeper",
+    "keeper:stream": "npm run stream --prefix keeper"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.2",

@@ -1,5 +1,5 @@
 /**
- * Live TxLINE data produced by the keeper (`npm run run` in ../keeper).
+ * Live TxLINE data produced by the keeper (`npm run keeper:run` from repo root).
  * Falls back to mock constants in data.ts when the keeper has not run yet.
  */
 import {

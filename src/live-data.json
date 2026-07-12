@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-12T09:25:07.783Z",
+  "generatedAt": "2026-07-12T09:28:41.985Z",
   "network": "devnet",
   "programId": "6pW64gN1s2uqjHkn1unFeEjAwJkPGHoppGvS715wyP2J",
   "apiOrigin": "https://txline-dev.txodds.com",
@@ -107,10 +107,10 @@
     "verified": true
   },
   "timing": {
-    "detectMs": 1153,
-    "proofFetchMs": 227,
-    "onChainVerifyMs": 163,
-    "totalMs": 1543
+    "detectMs": 1187,
+    "proofFetchMs": 219,
+    "onChainVerifyMs": 209,
+    "totalMs": 1615
   },
   "endpointsUsed": [
     "POST /auth/guest/start",

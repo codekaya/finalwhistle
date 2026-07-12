@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Keeper secrets (wallet + API tokens)
+keeper/secrets/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
